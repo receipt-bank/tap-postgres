@@ -379,8 +379,10 @@ def consume_message(streams, state, msg, time_extracted, conn_info, end_lsn, mes
     return state
 
 def locate_replication_slot(conn_info):
-    if conn_info.get('wal2json_slog_name') is not None:
-        return conn_info['wal2json_slot_name']
+    if conn_info.get('wal2json_slot_name') is not None:
+        slot_name = str(conn_info["wal2json_slot_name"])
+        LOGGER.info("using pg_replication_slot %s", slot_name)
+        return slot_name
 
     conn = post_db.open_connection(conn_info, False)
     with conn.cursor() as cur:
